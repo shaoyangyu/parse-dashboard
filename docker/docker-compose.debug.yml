@@ -1,0 +1,33 @@
+version: '2.1'
+volumes:
+  mongodb:
+    driver: local
+services:
+  parse-dashboard:
+    image: parse-dashboard
+    ports:
+    - "4040:4040"
+    links:
+    - db:mongo
+    volumes:
+    - ../Parse-Dashboard/parse-dashboard-config.json:/src/Parse-Dashboard/parse-dashboard-config.json
+    command: bash -lc "tail -f /dev/null"
+  parse-server:
+    image: registry.cn-beijing.aliyuncs.com/shaoyang_builds/parse-server
+    ports:
+    - "1337:1337"
+    links:
+    - db:mongo
+    command: bash -lc "npm run dev"
+  db:
+    image: mongo
+    ports:
+    - "27017:27017"
+    healthcheck:
+      test: ["CMD","echo", "db.stats().ok", "|","mongo db:27017/test","--quiet"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+    - mongodb:/data/db
+              

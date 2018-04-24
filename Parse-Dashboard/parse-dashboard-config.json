@@ -1,4 +1,5 @@
 {
+  "allowInsecureHTTP": true,
   "apps": [{
     "serverURL": "",
     "appId": "",
